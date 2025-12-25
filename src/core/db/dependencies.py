@@ -1,6 +1,6 @@
 from typing import AsyncGenerator
-from .session import AsyncSessionLocal
 
+from .session import AsyncSessionLocal
 
 
 async def init_async_session() -> AsyncGenerator:

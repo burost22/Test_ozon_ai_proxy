@@ -14,21 +14,21 @@ class AppException(Exception):
         super().__init__(self.detail)
 
 
-class LLMServiceUnavailableError(Exception):
+class LLMServiceUnavailableError(AppException):
     """Возникает, когда служба языковой модели недоступна (ошибки подключения/тайм-аута)."""
 
     status_code = status.HTTP_503_SERVICE_UNAVAILABLE
     detail = "сервис (LLM провайдер) недоступен"
 
 
-class LLMBadGatewayError(Exception):
+class LLMBadGatewayError(AppException):
     """Возникает, когда служба LLM возвращает ошибку сервера."""
 
     status_code = status.HTTP_502_BAD_GATEWAY
     detail = "Не удалось отправить запрос к серверу и получить ответ "
 
 
-class LLMRateLimitError(Exception):
+class LLMRateLimitError(AppException):
     """Возникает, когда превышен лимит частоты запросов к сервису языковой модели."""
 
     status_code = status.HTTP_429_TOO_MANY_REQUESTS

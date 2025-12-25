@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     description: str = "Описание"
     version: str = "1.0.0"
     openai_api_key: str | None = None
-    mock_mode: bool = False
+    mock_mode: bool = True
     database_url: str
     app_host: str = "0.0.0.0"
     app_port: int = 8000

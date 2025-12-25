@@ -7,9 +7,9 @@ from api.routers import main_router
 from core.config import settings
 from core.error_handlers import app_exception_handler
 from core.exceptions import AppException
-from core.logging import setup_logging
+# from core.logging import setup_logging
 
-setup_logging()
+# setup_logging()
 ozon_app = FastAPI(
     title=settings.title,
     description=settings.description,
@@ -24,7 +24,7 @@ async def fastapi_main() -> None:
     # Настраиваем конфигуратор:
     config = uvicorn.Config(
         "main:ozon_app",
-        reload=True,
+        reload=False,
         host=settings.app_host,
         port=settings.app_port,
     )
