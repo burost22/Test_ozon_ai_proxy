@@ -3,6 +3,7 @@ import asyncio
 import uvicorn
 from fastapi import FastAPI
 
+from api.routers import main_router
 from core.config import settings
 from core.error_handlers import app_exception_handler
 from core.exceptions import AppException
@@ -14,6 +15,7 @@ ozon_app = FastAPI(
     description=settings.description,
     version=settings.version,
 )
+ozon_app.include_router(main_router)
 ozon_app.add_exception_handler(AppException, app_exception_handler)
 
 
