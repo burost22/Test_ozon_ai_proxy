@@ -24,7 +24,7 @@ async def fastapi_main() -> None:
     # Настраиваем конфигуратор:
     config = uvicorn.Config(
         "main:ozon_app",
-        reload=False,
+        reload=True,
         host=settings.app_host,
         port=settings.app_port,
     )

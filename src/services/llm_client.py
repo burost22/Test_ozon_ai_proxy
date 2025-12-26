@@ -7,7 +7,7 @@ from openai import (APIConnectionError, APIError, APITimeoutError, AsyncOpenAI,
 
 from core.config import settings
 from core.constants import (LLM_MODEL, MOCK_ANSWER, ROLE, START_DELAY,
-                            STOP_DELAY, TEMPERATURE)
+                            STOP_DELAY, TEMPERATURE,BASE_URL_OPENROUTER)
 from core.exceptions import (LLMBadGatewayError, LLMRateLimitError,
                              LLMServiceUnavailableError)
 from core.logging import logger
@@ -38,7 +38,7 @@ class LLMClient:
             return True
 
         # Проверка наличия API ключа для доступа к ЛЛМ
-        if not settings.openai_api_key or not settings.openai_api_key.strip():
+        if not settings.openrouter_api_key or not settings.openrouter_api_key.strip():
             return True
 
         return False
@@ -46,8 +46,8 @@ class LLMClient:
     def _get_client(self) -> AsyncOpenAI:
         """Создание или получение асинхронного клиента для ЛЛМ"""
         if self._client is None:
-            if settings.openai_api_key:
-                self._client = AsyncOpenAI(api_key=settings.openai_api_key)
+            if settings.openrouter_api_key:
+                self._client = AsyncOpenAI(base_url=BASE_URL_OPENROUTER,api_key=settings.openrouter_api_key)
             else:
                 raise ValueError("API ключ обязателен для реального режима работы.")
 
