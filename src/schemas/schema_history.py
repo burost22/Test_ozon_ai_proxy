@@ -1,7 +1,7 @@
 from datetime import datetime as dt
 from typing import List
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class HistoryItem(BaseModel):
@@ -19,15 +19,15 @@ class HistoryItem(BaseModel):
         ...,
         description="дата и время вопроса.",
     )
-
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "question": "Как дела?",
                 "answer": "Я в порядке. Спасибо,что спросил. У тебя как ?",
                 "timestamp": "2024-01-15T10:30:00",
             }
         }
+    )
 
 
 class HistoryResponse(BaseModel):
@@ -37,16 +37,14 @@ class HistoryResponse(BaseModel):
         ...,
         description="Список последних запросов и ответов к ЛЛМ.",
     )
-
-    class Config:
-        """Пример ответа."""
-
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "items": [
                     {
                         "question": "Как дела?",
-                        "answer": "Я в порядке. Спасибо,что спросил. У тебя как ?",
+                        "answer": ("Я в порядке.Спасибо,"
+                                    "что спросил.У тебя как?"),
                         "timestamp": "2024-01-15T10:30:00",
                     },
                     {
@@ -57,3 +55,4 @@ class HistoryResponse(BaseModel):
                 ]
             }
         }
+    )

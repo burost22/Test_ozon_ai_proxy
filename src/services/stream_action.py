@@ -29,17 +29,29 @@ logger = get_logger("ozon_app")
 
 
 class StreamAction(BaseLLMAction):
-    """Реализует потоковую передачу ответов ЛЛМ как в фиктивном, так и в реальном режимах."""
+    """
+        Реализует потоковую передачу
+        ответов ЛЛМ как в фиктивном, так и в реальном режимах.
+    """
 
     async def _mock(self, question: str) -> AsyncGenerator[str, None]:
+        """
+            Моковый режим. После переопределения из
+            базового класса возвращает Mock-заглушку в режиме стриминга.
+          """
         delay = random.uniform(START_DELAY, STOP_DELAY)
         await asyncio.sleep(delay)
-        logger.info(f"Mock-режим: Стриминг запроса (имитация задержки {delay:.2f} с")
+        logger.info(f"Mock-режим: Стриминг"
+                    f" запроса (имитация задержки {delay:.2f} с")
         for word in MOCK_ANSWER.split():
             yield word + " "
             await asyncio.sleep(random.uniform(START_DELAY, STOP_DELAY))
 
     async def _real(self, question: str) -> AsyncGenerator[str, None]:
+        """
+            Моковый режим. После переопределения из
+            базового класса возвращает ответ в режиме стриминга.
+        """
         client = self._get_client()
         try:
             logger.info("Отправка запроса к ЛЛМ.")
@@ -54,10 +66,14 @@ class StreamAction(BaseLLMAction):
             yield "\n"
         except (APIConnectionError, APITimeoutError) as e:
             logger.error(f"Ошибка соединения с сервисом OpenAI API: {e}")
-            raise LLMServiceUnavailableError(f"ЛЛМ сервис недоступен: {str(e)}") from e
+            raise LLMServiceUnavailableError(f"ЛЛМ сервис"
+                                             f" недоступен: {str(e)}") from e
         except RateLimitError as e:
-            logger.error(f"Превышен лимит частоты запросов к серверу OpenAI API: {e}")
-            raise LLMRateLimitError(f"Превышен лимит запросов: {str(e)}") from e
+            logger.error(f"Превышен лимит частоты запросов"
+                         f" к серверу OpenAI API: {e}")
+            raise LLMRateLimitError(f"Превышен лимит"
+                                    f" запросов: {str(e)}") from e
         except InternalServerError as e:
             logger.error(f"Ошибка сервера у OpenAI API: {e}")
-            raise LLMBadGatewayError(f"Ошибка сервера у OpenAI API: {str(e)}") from e
+            raise LLMBadGatewayError(f"Ошибка сервера у "
+                                     f"OpenAI API: {str(e)}") from e

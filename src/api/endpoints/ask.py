@@ -18,7 +18,8 @@ router = APIRouter(tags=["Отправка запроса к LLM"])
     "Вопрос-ответ сохраняется в БД для дальнейшего использования",
 )
 async def post_question_to_llm(
-    request: QuestionRequest, session: AsyncSession = Depends(init_async_session)
+    request: QuestionRequest,
+    session: AsyncSession = Depends(init_async_session)
 ) -> QuestionResponse:
     """
     Отправляет вопрос к языковой модели и возвращает ответ.

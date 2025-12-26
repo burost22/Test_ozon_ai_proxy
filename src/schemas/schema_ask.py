@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from core.constants import MAX_LENGTH_ANS, MIN_LENGTH_ANS
 
@@ -13,13 +13,13 @@ class QuestionRequest(BaseModel):
         min_length=MIN_LENGTH_ANS,
         max_length=MAX_LENGTH_ANS,
     )
-
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "question": "Как дела?",
             }
         }
+    )
 
 
 class QuestionResponse(BaseModel):
@@ -31,9 +31,10 @@ class QuestionResponse(BaseModel):
         example="Я в порядке. Спасибо,что спросил. У тебя как ?",
     )
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "answer": "Я в порядке. Спасибо,что спросил. У тебя как ?",
             }
         }
+    )

@@ -1,3 +1,4 @@
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 
 
@@ -14,12 +15,11 @@ class Settings(BaseSettings):
     app_port: int = 8000
     log_level: str = "INFO"
 
-    class Config:
-        """Настройки конфигурации Pydantic."""
-
-        env_file = ".env"
-        extra = "ignore"
-        env_file_encoding = "utf-8"
+    model_config = ConfigDict(
+        env_file=".env",
+        extra="ignore",
+        env_file_encoding="utf-8",
+    )
 
 
 settings = Settings()

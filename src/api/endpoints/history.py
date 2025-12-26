@@ -21,17 +21,31 @@ async def get_history_conversation(
     session: AsyncSession = Depends(init_async_session),
 ) -> HistoryResponse:
     """
-    Docstring для get_history_conversation
+    Отправляет список из 10 последних
+    айтемов (вопрос ответ со временем).
+
+    Аргументы:
+        session: Сессия базы данных для получения истории.
+
+    Возвращает:
+        список из 10 последних айтемов.
     """
+    # берем нужные нам объекты модели,сортируя их,как нам нужно
     history_response = (
-        select(HistoryModel).order_by(HistoryModel.timestamp.desc()).limit(LIMIT_COUNT)
+        select(HistoryModel
+               ).order_by(HistoryModel.timestamp.desc()
+                          ).limit(LIMIT_COUNT)
     )
     res = await session.execute(history_response)
+    # распаковыаем кортежи и берем первое значение оттуда
     records = res.scalars().all()
-
+    # Присваиваем каждому айтему ,на основании объекта модели,
+    # нужные значения с помощь. list comprehension
     items = [
         HistoryItem(
-            question=record.question, answer=record.answer, timestamp=record.timestamp
+            question=record.question,
+            answer=record.answer,
+            timestamp=record.timestamp
         )
         for record in records
     ]

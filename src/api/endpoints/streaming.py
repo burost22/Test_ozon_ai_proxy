@@ -16,6 +16,17 @@ router = APIRouter(tags=["Отправка запроса к LLM c выводо�
     response_model=None,
 )
 async def post_question_to_llm_in_straming_mode(request: QuestionRequest):
+    """
+    Возвращает ответ в режима стриминга. Используется StreamingResponse FastApi
+
+    Аргументы:
+        request: Запрос с вопросом для ЛЛМ.
+
+    Возвращает:
+        ответ в режиме стриминга.
+    """
+
+    # Создаем генератор ,который будет получать поэтапно ответ от ЛЛМ
     async def generator():
         async for chunk in llm_client.stream_question(request.question):
             yield chunk

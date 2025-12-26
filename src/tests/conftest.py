@@ -5,8 +5,13 @@ from typing import AsyncGenerator
 
 import pytest
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine
+)
 from sqlalchemy.pool import StaticPool
+
 
 # Проверка пути. Нужно,чтобы избежать ошибки с путем
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,9 +23,9 @@ os.environ.setdefault("DATABASE_URL", "sqlite+aiosqlite:///:memory:")
 os.environ.setdefault("AUTH_TOKEN", "test-token")
 os.environ.setdefault("MOCK_MODE", "true")
 
-from core.db.dependencies import init_async_session
-from core.db.models import Base
-from main import ozon_app
+from core.db.dependencies import init_async_session # noqa 402
+from core.db.models import Base # noqa 402
+from main import ozon_app # noqa 402
 
 
 @pytest.fixture(scope="session")

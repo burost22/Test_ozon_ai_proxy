@@ -7,6 +7,8 @@
 [Технологии](#технологии)  
 [Начало работы](#начало-работы)  
 [Тестирование](#тестирование)  
+[Структура проекта](#структура-проекта)  
+[Примечания](#примечания)  
 
 ## Описание проекта
 
@@ -51,25 +53,71 @@
 ## Начало работы
 # Для корректного начала работы локально необходимо:  
 - клонировать репозиторрий
-- создать виртуальное окружение python -m venv venv
-- активировать виртуальное окружение source ./venv/Scripts/activate
-- установить зависиомтси из файла requirements.txt pip install -r requirements.txt
+- создать виртуальное окружение **python -m venv venv**
+- активировать виртуальное окружение **source ./venv/Scripts/activate**(для Windows)
+- установить зависиомтси из файла **requirements.txt pip install -r requirements.txt**
 - в дериктории src создать файл **.env** и внести туда переменные из **.env.example** с реальными значениями.
-- в той же дериктории применить созданную миграцию для БД alembic upgrade head
-- запустить приложение uvicorn main:ozon_app (можно добавить флаг --reload)
-- приложение доступно http://host:port/docs ( host и порт задаются в .env)
+- в той же дериктории применить созданную миграцию для БД **alembic upgrade head**
+- запустить приложение **uvicorn main:ozon_app** (можно добавить флаг --reload)
+- документация доступна *http://host:port/docs* ( host и порт задаются в .env)
 ---
 # Для работы через Docker необходимы следующие шаги:
 - клонировать репозиторрий
 - в дериктории src создать файл **.env** и внести туда переменные из **.env.example** с реальными значениями.
-- Для сборки или пересборки выполнить команду docker build -t ozon_app . (создаем образ)
-- Поднимаем контейнер docker run --name ozon_app_container --rm -p 8000:8000 ozon_app
-- Применяем миграции(выполнить команду в другом терминале) docker exec -it ozon_app_container alembic upgrade head
-- Для остановки контейнера выполняетс команда docker stop ozon_app_container
+- Для сборки или пересборки выполнить команду **docker build -t ozon_app .** (создаем образ)
+- Поднимаем контейнер **docker run --name ozon_app_container --rm -p 8000:8000 ozon_app**
+- Применяем миграции(выполнить команду в другом терминале) **docker exec -it ozon_app_container alembic upgrade head**
+- Для остановки контейнера выполняетс команда **docker stop ozon_app_container**
 - Для удаления образа docker rmi ozon_app
 ---
 **ВАЖНО** - так как это тестовое задание ,то volume не предусмотрены. БД будет удаляться вместе с образом,.env тоже находится в контейнере
 
 ## Тестирование
 Все тесты находятся в папке tests
+Чтобы запустить их необходимо в папке src ввести команду **pytest**
+---
+## Структура проекта
+- src/
+  - main.py — точка входа FastAPI
+  - api/
+    - routers.py — сборка роутеров
+    - endpoints/
+      - ask.py — POST /api/ask
+      - history.py — GET /api/history
+      - streaming.py — POST /api/streaming (стриминговый ответ)
+  - core/
+    - config.py — pydantic-settings, чтение .env
+    - logging.py — логгер в STDOUT
+    - exceptions.py, error_handlers.py — кастомные ошибки и хендлеры
+    - constants.py — константы
+    - db/engine.py, session.py, dependencies.py — SQLAlchemy async
+    - db/models/history.py — модель History
+  - schemas/
+    - schema_ask.py — запрос/ответ для ask/streaming
+    - schema_history.py — ответ для history
+  - services/
+    - abstract.py — базовый шаблон действий ЛЛМ
+    - ask_action.py — реализация обычного запроса
+    - stream_action.py — реализация стриминга
+    - llm_client.py — фасад выбора mock/real
+  - tests/
+    - conftest.py — фикстуры (in-memory SQLite, клиент, auth)
+    - test_ask_mock.py — mock happy path
+    - test_validation_and_errors.py — валидация, 429/503, auth
+
+## Примечания
+Не забывайте делать коммиты после создания какой-то фичи. (git add.; git commit -m 'Описание коммита', git push)
+---
+*Архитекутра приложения разбита на следующие составляющие*:
+- бизнес логика - services
+- хендлеры запросов - api
+- документирование,валидирование полей -schemas
+- тестирование - tests
+- все необходимые настройки (логирование ,кастомные ошибки,бд и тд) - core
+---
+*Предложения по улучшению*:
+- Можно добавить обработку ошибок,связанных с падением БД
+- однозначно стоит добавить Docker compose volume networks и т.д.,чтобы ручками было меньше делать
+- допилить вход и выход для пользователя,чтобы можно было полноценно реализовать auth
+- убрать ворнинги в тестах. Нужно поработать со схеамим pydantic
 ---

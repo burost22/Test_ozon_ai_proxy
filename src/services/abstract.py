@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from types import AsyncGeneratorType
-from typing import Awaitable, Callable, Generic, TypeVar
+from typing import Callable, Generic, TypeVar
 
 from openai import AsyncOpenAI
 
@@ -10,19 +10,33 @@ T = TypeVar("T")
 
 
 class BaseLLMAction(ABC, Generic[T]):
-    """Шаблон действий (обычные и потоковые) для ЛЛМ с целью сохранения DRY."""
+    """
+        Шаблон действий (обычные и потоковые)
+        для ЛЛМ с целью сохранения DRY.
+    """
 
-    def __init__(self, is_mock: bool, get_client: Callable[[], AsyncOpenAI]) -> None:
+    def __init__(
+            self,
+            is_mock: bool,
+            get_client: Callable[[],
+                                 AsyncOpenAI]) -> None:
         self._is_mock = is_mock
         self._get_client = get_client
 
     async def __call__(self, question: str) -> T:
         if not question or not question.strip():
             raise InvalidQuestionError("Вопрос не может быть пустым")
-        result = self._mock(question) if self._is_mock else self._real(question)
+        result = (self._mock(question)
+                  if self._is_mock
+                  else self._real(question))
 
-        # Потоковые ответы возвращаем напрямую как async generator / async iterator
-        if isinstance(result, AsyncGeneratorType) or hasattr(result, "__aiter__"):
+        # Потоковые ответы возвращаем
+        # напрямую как async generator / async iterator
+        if isinstance(
+            result,
+            AsyncGeneratorType) or hasattr(
+                result,
+                "__aiter__"):
             return result  # type: ignore[return-value]
 
         # Обычные ответы: ожидаем корутину
