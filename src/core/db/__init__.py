@@ -6,5 +6,4 @@ __all__ = (
     "async_engine",
     "AsyncSessionLocal",
     "init_async_session",
-
 )

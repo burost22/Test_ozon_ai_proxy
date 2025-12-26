@@ -15,9 +15,11 @@ router = APIRouter(tags=["Отправка запроса к LLM"])
     status_code=status.HTTP_200_OK,
     summary="Запрос информации от ЛЛМ",
     description="Отправляет запрос к ЛЛМ, возвращает ответ."
-                "Вопрос-ответ сохраняется в БД для дальнейшего использования",
+    "Вопрос-ответ сохраняется в БД для дальнейшего использования",
 )
-async def post_question_to_llm(request: QuestionRequest,session:AsyncSession = Depends(init_async_session)) -> QuestionResponse:
+async def post_question_to_llm(
+    request: QuestionRequest, session: AsyncSession = Depends(init_async_session)
+) -> QuestionResponse:
     """
     Отправляет вопрос к языковой модели и возвращает ответ.
 
@@ -43,7 +45,6 @@ async def post_question_to_llm(request: QuestionRequest,session:AsyncSession = D
         answer=answer,
     )
     session.add(history_record)
-    await session.flush() # Получаем ID экземпляра записи
-
+    await session.flush()  # Получаем ID экземпляра записи
 
     return QuestionResponse(answer=answer)

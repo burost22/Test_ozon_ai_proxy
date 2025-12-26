@@ -13,12 +13,14 @@ class QuestionRequest(BaseModel):
         min_length=MIN_LENGTH_ANS,
         max_length=MAX_LENGTH_ANS,
     )
+
     class Config:
         json_schema_extra = {
             "example": {
                 "question": "Как дела?",
             }
         }
+
 
 class QuestionResponse(BaseModel):
     """Схема ответа от ЛЛМ"""
@@ -28,6 +30,7 @@ class QuestionResponse(BaseModel):
         description="Ответ,получаемый от ЛЛМ",
         example="Я в порядке. Спасибо,что спросил. У тебя как ?",
     )
+
     class Config:
         json_schema_extra = {
             "example": {

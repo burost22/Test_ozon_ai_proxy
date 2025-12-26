@@ -2,16 +2,35 @@ import asyncio
 import random
 from typing import Optional
 
-from openai import (APIConnectionError, APIError, APITimeoutError, AsyncOpenAI,
-                    InternalServerError, RateLimitError)
+from openai import (
+    APIConnectionError,
+    APIError,
+    APITimeoutError,
+    AsyncOpenAI,
+    InternalServerError,
+    RateLimitError,
+)
 
 from core.config import settings
-from core.constants import (LLM_MODEL, MOCK_ANSWER, ROLE, START_DELAY,
-                            STOP_DELAY, TEMPERATURE,BASE_URL_OPENROUTER)
-from core.exceptions import (LLMBadGatewayError, LLMRateLimitError,
-                             LLMServiceUnavailableError)
+from core.constants import (
+    BASE_URL_OPENROUTER,
+    LLM_MODEL,
+    MOCK_ANSWER,
+    ROLE,
+    START_DELAY,
+    STOP_DELAY,
+    TEMPERATURE,
+)
+from core.exceptions import (
+    InvalidQuestionError,
+    LLMBadGatewayError,
+    LLMRateLimitError,
+    LLMServiceUnavailableError,
+)
 from core.logging import get_logger
-logger=get_logger("ozon_app")
+
+logger = get_logger("ozon_app")
+
 
 class LLMClient:
     """Клиент для взаимодействия с языковой моделью (OpenAI или в режиме имитации)."""
@@ -47,7 +66,9 @@ class LLMClient:
         """Создание или получение асинхронного клиента для ЛЛМ"""
         if self._client is None:
             if settings.openrouter_api_key:
-                self._client = AsyncOpenAI(base_url=BASE_URL_OPENROUTER,api_key=settings.openrouter_api_key)
+                self._client = AsyncOpenAI(
+                    base_url=BASE_URL_OPENROUTER, api_key=settings.openrouter_api_key
+                )
             else:
                 raise ValueError("API ключ обязателен для реального режима работы.")
 
@@ -97,7 +118,7 @@ class LLMClient:
             # Извлекаем нужный нам ответ
             answer = respoonse.choices[0].message.content
             if not answer:
-                raise ValueError("Пустой ответ от ЛЛМ.")
+                raise LLMBadGatewayError("Пустой ответ от ЛЛМ.")
             logger.info("Успешно получен ответ от ЛЛМ.")
             return answer
 
@@ -113,17 +134,6 @@ class LLMClient:
             logger.error(f"ошибка сервера у OpenAI API: {e}")
             raise LLMBadGatewayError(f"ошибка сервера у OpenAI API: {str(e)}") from e
 
-        except APIError as e:
-            # Обрабатывает другие ошибки API (4xx, 5xx и т.д.).
-            logger.error(f"Ошибки OpenAI API: {e}")
-            if hasattr(e, "status_code"):
-                if e.status_code >= 500:
-                    raise LLMBadGatewayError(
-                        f"Ошибка ЛЛМ сервиса (HTTP {e.status_code}): {str(e)}"
-                    ) from e
-                elif e.status_code == 429:
-                    raise LLMRateLimitError(f"Превышен лимит запросов: {str(e)}") from e
-
     async def ask_question(self, question: str) -> str:
         """
         LLMClient Задает вопрос к сервису
@@ -136,7 +146,7 @@ class LLMClient:
             Ответ от языковой модели
         """
         if not question or not question.strip():
-            raise ValueError("Вопрос не может быть пустым")
+            raise InvalidQuestionError("Вопрос не может быть пустым")
 
         if self._is_mock_mode:
             return await self._mock_ask(question)

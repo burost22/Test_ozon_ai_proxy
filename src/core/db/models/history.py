@@ -2,8 +2,7 @@ from datetime import UTC
 from datetime import datetime as dt
 
 from sqlalchemy import DateTime, Integer, Text
-from sqlalchemy.orm import (Mapped, declarative_base, declared_attr,
-                            mapped_column)
+from sqlalchemy.orm import Mapped, declarative_base, declared_attr, mapped_column
 
 
 class PreBase:
@@ -28,7 +27,8 @@ class HistoryModel(Base):
     answer: Mapped[str] = mapped_column(Text, nullable=False)
 
     def __repr__(self) -> str:
-        return (f"История по запросу - {self.question}"
-                f" c id - {self.id} и ответом - {self.answer}"
-                f", время создания - {self.timestamp}"
+        return (
+            f"История по запросу - {self.question}"
+            f" c id - {self.id} и ответом - {self.answer}"
+            f", время создания - {self.timestamp}"
         )

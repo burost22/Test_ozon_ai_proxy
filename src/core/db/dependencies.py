@@ -19,4 +19,3 @@ async def init_async_session() -> AsyncGenerator:
             raise
         finally:
             await session.close()
-

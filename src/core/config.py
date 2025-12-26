@@ -9,12 +9,14 @@ class Settings(BaseSettings):
     version: str = "1.0.0"
     openrouter_api_key: str | None = None
     mock_mode: bool = False
-    database_url: str
+    database_url: str = "sqlite+aiosqlite:///./history.db"
     app_host: str = "0.0.0.0"
     app_port: int = 8000
+    log_level: str = "INFO"
 
     class Config:
         """Настройки конфигурации Pydantic."""
+
         env_file = ".env"
         extra = "ignore"
         env_file_encoding = "utf-8"

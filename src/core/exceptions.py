@@ -33,3 +33,17 @@ class LLMRateLimitError(AppException):
 
     status_code = status.HTTP_429_TOO_MANY_REQUESTS
     detail = "Слишком много запросов"
+
+
+class InvalidQuestionError(AppException):
+    """Вопрос не прошёл валидацию."""
+
+    status_code = status.HTTP_400_BAD_REQUEST
+    detail = "Вопрос не может быть пустым"
+
+
+class UnauthorizedError(AppException):
+    """Ошибочная или отсутствующая авторизация."""
+
+    status_code = status.HTTP_401_UNAUTHORIZED
+    detail = "Неавторизовано"

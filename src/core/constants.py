@@ -9,5 +9,5 @@ BASE_URL_OPENROUTER = "https://openrouter.ai/api/v1"
 # Константы для схем пидантика
 MIN_LENGTH_ANS = 1
 MAX_LENGTH_ANS = 5000
-# Константы для api 
-LIMIT_COUNT=10
+# Константы для api
+LIMIT_COUNT = 10

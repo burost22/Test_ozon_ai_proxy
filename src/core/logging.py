@@ -42,7 +42,8 @@ import logging
 import os
 import sys
 from logging import Logger
-from typing import Dict, Any
+from typing import Any, Dict
+
 
 def configure_logging(level: str | None = None) -> None:
     """
@@ -53,7 +54,9 @@ def configure_logging(level: str | None = None) -> None:
     log_level = (level or os.getenv("LOG_LEVEL") or "INFO").upper()
 
     # Настройка простого форматтера с временной меткой (ISO-like)
-    formatter = logging.Formatter("%(asctime)s %(levelname)s %(name)s %(message)s", "%Y-%m-%dT%H:%M:%S")
+    formatter = logging.Formatter(
+        "%(asctime)s %(levelname)s %(name)s %(message)s", "%Y-%m-%dT%H:%M:%S"
+    )
 
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(formatter)
@@ -71,6 +74,7 @@ def configure_logging(level: str | None = None) -> None:
     logging.getLogger("uvicorn").handlers = [handler]
     logging.getLogger("uvicorn.error").handlers = [handler]
     logging.getLogger("uvicorn.access").handlers = [handler]
+
 
 def get_logger(name: str) -> Logger:
     return logging.getLogger(name)
