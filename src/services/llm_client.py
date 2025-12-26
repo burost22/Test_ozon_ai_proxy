@@ -10,8 +10,8 @@ from core.constants import (LLM_MODEL, MOCK_ANSWER, ROLE, START_DELAY,
                             STOP_DELAY, TEMPERATURE,BASE_URL_OPENROUTER)
 from core.exceptions import (LLMBadGatewayError, LLMRateLimitError,
                              LLMServiceUnavailableError)
-from core.logging import logger
-
+from core.logging import get_logger
+logger=get_logger("ozon_app")
 
 class LLMClient:
     """Клиент для взаимодействия с языковой моделью (OpenAI или в режиме имитации)."""

@@ -2,7 +2,8 @@ from fastapi import Request
 from fastapi.responses import JSONResponse
 
 from .exceptions import AppException
-from .logging import logger
+from .logging import get_logger
+logger=get_logger("ozon_app")
 
 
 async def app_exception_handler(

@@ -7,9 +7,10 @@ from api.routers import main_router
 from core.config import settings
 from core.error_handlers import app_exception_handler
 from core.exceptions import AppException
-# from core.logging import setup_logging
+from core.logging import configure_logging, get_logger
 
-# setup_logging()
+configure_logging()
+logger = get_logger("ozon_app")
 ozon_app = FastAPI(
     title=settings.title,
     description=settings.description,

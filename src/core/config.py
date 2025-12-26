@@ -1,5 +1,3 @@
-import os
-
 from pydantic_settings import BaseSettings
 
 
@@ -18,7 +16,7 @@ class Settings(BaseSettings):
     class Config:
         """Настройки конфигурации Pydantic."""
         env_file = ".env"
-        # extra = "ignore"
+        extra = "ignore"
         env_file_encoding = "utf-8"
 
 
