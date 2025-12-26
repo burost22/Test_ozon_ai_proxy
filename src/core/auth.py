@@ -20,4 +20,3 @@ async def verify_auth_token(authorization: str | None = Header(default=None)) ->
 
     if token != expected:
         raise UnauthorizedError("Неправильный или пропущенный токен авторизации")
-

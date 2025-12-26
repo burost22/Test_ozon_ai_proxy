@@ -14,7 +14,10 @@ async def client_no_auth():
     ) as client:
         yield client
 
-@pytest.mark.skip(reason="Не разобрался,как в документации добавлять токен. Через постмен все получается")
+
+@pytest.mark.skip(
+    reason="Не разобрался,как в документации добавлять токен. Через постмен все получается"
+)
 async def test_auth_failure_returns_unauthorized(client_no_auth):
     response = await client_no_auth.post("/api/ask", json={"question": "Hello"})
 
