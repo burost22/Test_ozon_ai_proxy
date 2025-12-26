@@ -46,7 +46,8 @@ class LLMClient:
         return await self._ask_action(question)
 
     async def stream_question(self, question: str) -> AsyncGenerator[str, None]:
-        async for chunk in self._stream_action(question):
+        stream = await self._stream_action(question)
+        async for chunk in stream:
             yield chunk
 
 
